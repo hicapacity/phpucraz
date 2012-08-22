@@ -1,0 +1,283 @@
+<!--
+Google IO 2012 HTML5 Slide Template
+
+Authors: Eric Bidelman <ebidel@gmail.com>
+         Luke Mahé <lukem@google.com>
+
+URL: https://code.google.com/p/io-2012-slides
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PHP, U Craz</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">-->
+  <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+  <!--This one seems to work all the time, but really small on ipad-->
+  <!--<meta name="viewport" content="initial-scale=0.4">-->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="stylesheet" media="all" href="theme/css/default.css">
+  <link rel="stylesheet" media="only screen and (max-device-width: 480px)" href="theme/css/phone.css">
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->
+  <script data-main="js/slides" src="js/require-1.0.8.min.js"></script>
+</head>
+<body style="opacity: 0">
+
+<slides class="layout-widescreen">
+
+  <slide class="logoslide nobackground">
+    <article class="flexbox vcenter">
+      <span><img src="images/logo.png"></span>
+    </article>
+  </slide>
+
+  <slide class="title-slide segue nobackground">
+    <aside class="gdbar"><img src="images/logo_128.png"></aside>
+    <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
+    <hgroup class="auto-fadein">
+      <h1 data-config-title><!-- populated from slide_config.json --></h1>
+      <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
+      <p data-config-presenter><!-- populated from slide_config.json --></p>
+    </hgroup>
+  </slide>
+
+  <slide>
+    <hgroup>
+			<h2>P.P.P. PHP</h2>
+    </hgroup>
+    <article>
+      <ol>
+        <li>PHP will treat undefined constants as bar word (but throws a notice)</li>
+				<li>You can silence everything (notices included) with @</li>
+      </ol>
+			<pre class="prettyprint larger" data-lang="php">
+@print(hello);
+@print(PHPはありえへん);</pre>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>PHP: Never Say NO</h2>
+    </hgroup>
+    <article>
+			<p>NO: Variables that start with a number</p>
+			<pre class="prettyprint larger" data-lang="php">
+$1 = "fish";
+var_dump($1);
+// PHP Parse error:  syntax error, unexpected
+// T_LNUMBER, expecting T_VARIABLE
+// or '$' in ...</pre>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>PHP: Never Say NO</h2>
+    </hgroup>
+    <article>
+			<p>YES: Variables that start with a number</p>
+			<pre class="prettyprint larger" data-lang="php">
+// ${'a'} is same as $a,
+${'1'} = 'wat';
+var_dump(${'1'});
+// string(3) "wat"</pre>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Neither P in PHP is Parser</h2>
+    </hgroup>
+    <article>
+			<p>here are some <s>functions</s></p>
+			<pre class="prettyprint larger" data-lang="php">
+list()
+empty()
+array()
+isset()</pre>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Neither P in PHP is Parser</h2>
+    </hgroup>
+    <article>
+			<p><em>These are handled in the parser</em></p>
+			<pre class="prettyprint medium" data-lang="php">
+empty($var1 || $var2)
+// Parse error: syntax error, unexpected
+// T_BOOLEAN_OR, ...
+</pre>
+			<pre class="prettyprint medium" data-lang="php">
+$b = 'empty';
+$b($a);
+// Fatal error: Call to undefined function empty()</pre>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Neither P in PHP is Parser</h2>
+    </hgroup>
+    <article>
+			<p>So they can't be defined as class methods</p>
+			<pre class="prettyprint medium" data-lang="php">
+class SadPanda {
+	function list(){}
+	function empty(){}
+	function array(){}
+	function isset(){}
+}
+// all are parse errors</pre>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Neither P in PHP is Parser</h2>
+    </hgroup>
+    <article>
+			<p>But can be called as class methods</p>
+			<pre class="prettyprint larger" data-lang="php">
+$f = new NotSadPanda();
+$f->list();
+$f->empty();
+$f->array();
+$f->isset();
+// are NOT parse errors</pre>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>Neither P in PHP is Parser</h2>
+    </hgroup>
+    <article>
+			<p>But can be called as class methods</p>
+			<pre class="prettyprint medium" data-lang="php">
+class NotSadPanda {
+    function __call($method, $args) {
+        var_dump($method);
+    }
+}</pre>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>PHP: Plz Haz Private?</h2>
+    </hgroup>
+    <article>
+			<p>OK, so Private is Private?</p>
+			<pre class="prettyprint medium" data-lang="php">
+class Secure {
+	private $secret = 'wat';
+}	
+$s = new Secure();
+var_dump($s->secret); // NO</pre>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>PHP: Plz Haz Private?</h2>
+    </hgroup>
+    <article>
+			<p>Professional Hacks: PHP</p>
+			<pre class="prettyprint medium" data-lang="php">
+class Secure {
+	private $secret = 'wat';
+}	
+$s = new Secure();
+$wat = (array) $s; // cast to array
+var_dump($wat);
+// array(1) { ["Securesecret"]=> string(3) "wat" }</pre>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>PHP: Plz Haz Private?</h2>
+    </hgroup>
+    <article>
+			<p>OK, how about Private methods?</p>
+			<pre class="prettyprint" data-lang="php">
+class Secure {
+	private function get_password() { return 'hunter2'; }
+}</pre>
+			<pre class="prettyprint medium" data-lang="php">
+$s = new Secure();
+$ref = new ReflectionClass(get_class($s));
+$haha = $ref->getMethod('get_password');
+$haha->setAccessible(true);
+var_dump($haha->invoke($s));
+// string(7) "hunter2"</pre>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>PHP Haz Pride</h2>
+    </hgroup>
+    <article>
+		<p>Add any of the following to a php powered server</p>
+		<pre class="medium">
+?=PHPE9568F34-D428-11d2-A769-00AA001ACF42
+?=PHPE9568F35-D428-11d2-A769-00AA001ACF42
+?=PHPE9568F36-D428-11d2-A769-00AA001ACF42
+?=PHPB8B5F2A0-3C92-11d3-A3A9-4C7B08C10000</pre>
+    </article>
+  </slide>
+
+  <slide>
+    <hgroup>
+      <h2>PHP Haz Pride</h2>
+    </hgroup>
+    <article>
+			<p>Examples</p>
+			<ul>
+				<li><a href="http://en.wikipedia.org/wiki/Main_Page?=PHPE9568F36-D428-11d2-A769-00AA001ACF42">
+					http://en.wikipedia.org/wiki/Main_Page?=PHPE9568F36-D428-11d2-A769-00AA001ACF42</a></li>
+				<li><a href="http://www.colourlovers.com/?=PHPE9568F36-D428-11d2-A769-00AA001ACF42">
+					http://www.colourlovers.com/?=PHPE9568F36-D428-11d2-A769-00AA001ACF42</a></li>
+				<li><a href="http://digg.com/?=PHPE9568F36-D428-11d2-A769-00AA001ACF42">
+					http://digg.com/?=PHPE9568F36-D428-11d2-A769-00AA001ACF42</a></li>
+				<li><a href="http://ikayzo.com/about/?=PHPB8B5F2A0-3C92-11d3-A3A9-4C7B08C10000">
+					http://ikayzo.com/about/?=PHPB8B5F2A0-3C92-11d3-A3A9-4C7B08C10000</a></li>
+				<li><a href="http://www.tetrisonline.com/?=PHPE9568F35-D428-11d2-A769-00AA001ACF42">
+					http://www.tetrisonline.com/?=PHPE9568F35-D428-11d2-A769-00AA001ACF42</a></li>
+			</ul>
+    </article>
+  </slide>
+
+
+  <slide class="thank-you-slide segue nobackground">
+    <aside class="gdbar right"><img src="images/logo_128.png"></aside>
+    <article class="flexbox vleft auto-fadein">
+      <h2>&lt;Thank You!&gt;</h2>
+      <p>Friends don't let friends write bad parsers</p>
+    </article>
+    <p class="auto-fadein" data-config-contact>
+      <!-- populated from slide_config.json -->
+    </p>
+  </slide>
+
+  <slide class="logoslide dark nobackground">
+    <article class="flexbox vcenter">
+      <span><img src="images/logo.png"></span>
+    </article>
+  </slide>
+
+  <slide class="backdrop"></slide>
+
+</slides>
+
+<!--[if IE]>
+  <script src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
+  <script>CFInstall.check({mode: 'overlay'});</script>
+<![endif]-->
+</body>
+</html>
